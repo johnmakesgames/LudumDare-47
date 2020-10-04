@@ -22,7 +22,7 @@ public class INPCTask
         IsFinished = false;
     }
 
-    public void RunUpdate()
+    public virtual void RunUpdate()
     {
         if (!IsFinished)
         {

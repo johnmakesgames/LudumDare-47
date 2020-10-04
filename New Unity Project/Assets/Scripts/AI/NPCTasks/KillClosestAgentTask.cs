@@ -46,9 +46,10 @@ public class KillClosestAgentTask : INPCTask
             hasKilled = true;
             TaskName = $"Killed: {agentToKill.name}";
             var splat = GameObject.Instantiate(this.parentObject.gameObject.GetComponent<OtherAgentTracker>().Splat);
-            splat.transform.position = new Vector3(agentToKill.transform.position.x, 0.01f, agentToKill.transform.position.z);
+            splat.transform.position = new Vector3(agentToKill.transform.position.x, -0.49f, agentToKill.transform.position.z);
             agentToKill.SetActive(false);
             this.parentObject.gameObject.GetComponent<OtherAgentTracker>().TimeSinceKill = 0;
+            this.parentObject.gameObject.GetComponent<OtherAgentTracker>().SignalKillToUI(agentToKill.name);
         }
         else
         {

@@ -17,16 +17,17 @@ public class OtherAgentTracker : MonoBehaviour
         OtherAgents = GameObject.FindGameObjectsWithTag("Character").Where(x => x != this.gameObject).ToList();
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        if (TimeSinceKill < 5)
+        if (TimeSinceKill < 2)
         {
             float bloodDropChance = Random.Range(0, TimeSinceKill);
-            if (bloodDropChance < 1)
+            bloodDropChance = Mathf.Round(bloodDropChance);
+            Debug.Log($"Time: {TimeSinceKill}  |  Rand: {bloodDropChance}");
+            if (bloodDropChance < 1.5f)
             {
                 GameObject drop = Instantiate(Drip);
-                drop.transform.position = new Vector3(this.transform.position.x, 0.01f, this.transform.position.z);
-                drop.transform.rotation = this.transform.rotation;
+                drop.transform.position = new Vector3(this.transform.position.x, -0.49f, this.transform.position.z);
             }
         }
 
@@ -49,6 +50,11 @@ public class OtherAgentTracker : MonoBehaviour
         }
 
         return counter;
+    }
+
+    public void SignalKillToUI(string nameOfVictim)
+    {
+        GameObject.Find("UIController").GetComponent<UIHandler>().SignalDeath(nameOfVictim);
     }
 
     public GameObject GetClosestKillableAgent()

@@ -18,6 +18,8 @@ public class NPCTaskFactory
                 return new GoToRoomTask(parameter);
             case TaskTypes.KillClosestAgent:
                 return new KillClosestAgentTask();
+            case TaskTypes.RoamPassively:
+                return new RoamBetweenRoomsRandomlyTask();
             default:
                 return null;
         }

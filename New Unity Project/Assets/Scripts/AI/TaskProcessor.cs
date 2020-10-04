@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -13,6 +14,7 @@ public enum TaskTypes
     WaitForDuration,
     GoToRoom,
     KillClosestAgent,
+    RoamPassively,
 }
 
 
@@ -67,17 +69,17 @@ public class TaskProcessor : MonoBehaviour
                     }
                 }
 
+                if (CurrentTask.FinishedState != INPCTask.FinishStates.FAILED)
+                    CompletedTasks.Add(CurrentTask.TaskName);
+
                 if (QueuedTasks.Count > 0)
                 {
-                    if (CurrentTask.FinishedState != INPCTask.FinishStates.FAILED)
-                        CompletedTasks.Add(CurrentTask.TaskName);
-
                     CurrentTask = QueuedTasks.Dequeue();
                     CurrentTask.Reset();
                 }
                 else
                 {
-                    CurrentTask = null;
+                    CurrentTask = NPCTaskFactory.CreateTaskFromTypeAndParameters(TaskTypes.RoamPassively, "");
                 }
             }
 
@@ -85,6 +87,8 @@ public class TaskProcessor : MonoBehaviour
             {
                 CurrentTask.RunUpdate();
             }
+
+            this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 0.5f, this.transform.position.z);
         }
     }
 }

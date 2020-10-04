@@ -28,7 +28,7 @@ public class GoToRoomTask : INPCTask
 
     protected override bool CheckHasFinished()
     {
-        if (Vector3.Distance(this.parentObject.transform.position, roomToGoTo.transform.position) < 1)
+        if (Vector3.Distance(this.parentObject.transform.position, roomToGoTo.transform.position) < 3)
         {
             FinishedState = FinishStates.SUCCEEDED;
             return true;
