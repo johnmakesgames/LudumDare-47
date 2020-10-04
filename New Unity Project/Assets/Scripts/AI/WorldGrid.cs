@@ -20,6 +20,8 @@ public class WorldGrid : MonoBehaviour
     public bool RenderGrid = true;
     public List<GameObject> GridColliders;
     public TileType[,] gridMap;
+    public bool finishedLoading = false;
+    private float timeRunning = 0;
 
     public void SetGridSizes()
     {
@@ -37,6 +39,7 @@ public class WorldGrid : MonoBehaviour
                 var collider = GameObject.Instantiate(GridCollisionObject);
                 collider.transform.position = this.transform.position + new Vector3(x * GridSquareSize, 0, z * GridSquareSize);
                 collider.transform.localScale = new Vector3(GridSquareSize, GridSquareSize, GridSquareSize);
+                collider.GetComponent<Renderer>().enabled = true;
                 collider.GetComponent<GridCube>().GridPosition = new Vector2(x, z);
                 GridColliders.Add(collider);
             }
@@ -64,6 +67,8 @@ public class WorldGrid : MonoBehaviour
 
             gridMap[Convert.ToInt32(gridItem.GridPosition.x), Convert.ToInt32(gridItem.GridPosition.y)] = type;
         }
+
+        finishedLoading = true;
     }
 
     // Start is called before the first frame update
@@ -76,6 +81,17 @@ public class WorldGrid : MonoBehaviour
 
     void Update()
     {
-        UpdateNavGrid();
+        if (timeRunning < 25)
+        {
+            UpdateNavGrid();
+            timeRunning += Time.deltaTime;
+        }
+        else
+        {
+            foreach (var item in GridColliders)
+            {
+                item.SetActive(false);
+            }
+        }
     }
 }

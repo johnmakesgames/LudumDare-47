@@ -10,7 +10,9 @@ public enum TaskTypes
 {
     GoToObject,
     GoToPosition,
-    WaitForDuration
+    WaitForDuration,
+    GoToRoom,
+    KillClosestAgent,
 }
 
 
@@ -26,7 +28,8 @@ public class TaskProcessor : MonoBehaviour
     public List<NPCTaskMap> TasksWithParameters;
     public Queue<INPCTask> QueuedTasks;
     public INPCTask CurrentTask;
-    public float MaximumRetries;
+    public List<string> CompletedTasks;
+    public bool IsDead = false;
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +38,7 @@ public class TaskProcessor : MonoBehaviour
 
         foreach(NPCTaskMap mapItem in TasksWithParameters)
         {
-            INPCTask newTask = NPCTaskFactory.CreateTaskFromTypeAndParameters(mapItem.TaskType.ToString(), mapItem.TaskParameter);
+            INPCTask newTask = NPCTaskFactory.CreateTaskFromTypeAndParameters(mapItem.TaskType, mapItem.TaskParameter);
             newTask.parentObject = this.gameObject;
             QueuedTasks.Enqueue(newTask);
         }
@@ -46,6 +49,11 @@ public class TaskProcessor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (IsDead)
+        {
+            return;
+        }
+
         if (CurrentTask != null)
         {
             if (CurrentTask.IsFinished)
@@ -53,7 +61,7 @@ public class TaskProcessor : MonoBehaviour
                 if (CurrentTask.FinishedState == INPCTask.FinishStates.FAILED)
                 {
                     CurrentTask.Retried++;
-                    if (!(CurrentTask.Retried >= MaximumRetries))
+                    if (!(CurrentTask.Retried >= CurrentTask.MaximumRetries))
                     {
                         QueuedTasks.Enqueue(CurrentTask);
                     }
@@ -61,7 +69,11 @@ public class TaskProcessor : MonoBehaviour
 
                 if (QueuedTasks.Count > 0)
                 {
+                    if (CurrentTask.FinishedState != INPCTask.FinishStates.FAILED)
+                        CompletedTasks.Add(CurrentTask.TaskName);
+
                     CurrentTask = QueuedTasks.Dequeue();
+                    CurrentTask.Reset();
                 }
                 else
                 {
@@ -74,6 +86,5 @@ public class TaskProcessor : MonoBehaviour
                 CurrentTask.RunUpdate();
             }
         }
-
     }
 }

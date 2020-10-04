@@ -10,6 +10,7 @@ public class GridCube : MonoBehaviour
     public Vector2 GridPosition;
     public bool GridIndexDirty = false;
     public bool IsColliding;
+    private float timeSinceStart = 0;
 
     private void Start()
     {
@@ -19,6 +20,8 @@ public class GridCube : MonoBehaviour
 
     private void Update()
     {
+        timeSinceStart += Time.deltaTime;
+
         if (collidingObjects.Count > 0)
         {
             IsColliding = true;
@@ -28,6 +31,11 @@ public class GridCube : MonoBehaviour
         {
             IsColliding = false;
             this.GetComponent<MeshRenderer>().material = NotCollidingMat;
+
+            if (timeSinceStart > 1)
+            {
+                this.gameObject.GetComponent<BoxCollider>().enabled = false;
+            }
         }
     }
 

@@ -44,7 +44,7 @@ public class DRSPathfinder
             searchLength = worldGrid.GridSquareSize * 1.1f;
             refineLength = worldGrid.GridSquareSize * 0.9f;
             lengthOfSearchSq = (worldGrid.GridSquareSize * worldGrid.GridSquareSize) + (worldGrid.GridSquareSize * worldGrid.GridSquareSize);
-            rotationInDegrees = 25.0f;
+            rotationInDegrees = 15.0f;
             stepSize = rotationInDegrees * Mathf.Deg2Rad;
             radian180 = 180 * Mathf.Deg2Rad;
             setup = true;
@@ -89,7 +89,7 @@ public class DRSPathfinder
     bool Search(Vector2 currentPosition, Vector2 targetPosition, bool orderOfRotation, ref List<Vector2> path)
     {
         // Check if the cell is valid, if not exit out 
-        if (!IsCellValid(currentPosition))
+        if (!IsCellValid(currentPosition) || !IsCellValid(targetPosition))
         {
             return false;
         }
@@ -142,7 +142,7 @@ public class DRSPathfinder
 
         float dotRight = Vector2.Dot(unitVectorToTarget, new Vector2(1.0f, 0.0f));
         float dotUp = Vector2.Dot(unitVectorToTarget, new Vector2(0.0f, 1.0f));
-        float startRadians = Mathf.Acos(dotRight);
+        float startRadians = 3.14f;
 
         // Rotate our vector by the start radians
         if (dotUp > 0.0f)
@@ -166,7 +166,7 @@ public class DRSPathfinder
             {
                 polarVectorPositive.x += stepSize;
 
-                if (!positiveComplete && polarVectorPositive.x < radian180 + startRadians)
+                if (!positiveComplete && polarVectorPositive.x < radian180)
                 {
                     polarAsCart = new Vector2(polarVectorPositive.y * Mathf.Cos(polarVectorPositive.x), polarVectorPositive.y * Mathf.Sin(polarVectorPositive.x));
 
@@ -229,6 +229,16 @@ public class DRSPathfinder
 
         // No path here
         return false;
+    }
+
+    public void RenderDRSPath()
+    {
+        for (int i = 0; i < pathData.Count -1; i++)
+        {
+            Vector3 start = new Vector3(pathData[i].x, 0, pathData[i].y);
+            Vector3 end = new Vector3(pathData[i + 1].x, 0, pathData[i + 1].y); 
+            Debug.DrawLine(start, end, Color.red);
+        }
     }
 
     List<Vector2> EnhancePath(List<Vector2> tempPathData)

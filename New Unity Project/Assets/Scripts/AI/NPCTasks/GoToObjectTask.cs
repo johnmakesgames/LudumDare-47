@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class GoToObjectTask : INPCTask
 {
@@ -13,15 +14,13 @@ public class GoToObjectTask : INPCTask
 
     protected override bool CanRun()
     {
-        return true;
+        return (objectToGoTo != null);
     }
 
     protected override void Run()
     {
-        Vector3 toLocation = objectToGoTo.transform.position - this.parentObject.transform.position;
-        toLocation.Normalize();
-
-        this.parentObject.transform.position += toLocation * 10 * Time.deltaTime;
+        NavMeshAgent agent = this.parentObject.GetComponent<NavMeshAgent>();
+        agent?.SetDestination(objectToGoTo.transform.position);
     }
 
     protected override bool CheckHasFinished()

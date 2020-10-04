@@ -4,23 +4,22 @@ using UnityEngine;
 
 public class NPCTaskFactory
 {
-    public static INPCTask CreateTaskFromTypeAndParameters(string taskType, string parameter)
+    public static INPCTask CreateTaskFromTypeAndParameters(TaskTypes taskType, string parameter)
     {
-        if (taskType == "GoToObject")
+        switch (taskType)
         {
-            return new GoToObjectTask(parameter);
-        }
-        else if (taskType == "GoToPosition")
-        {
-            return new GoToLocationTask(parameter);
-        }
-        else if (taskType == "WaitForDuration")
-        {
-            return new WaitForDurationTask(parameter);
-        }
-        else
-        {
-            return null;
+            case TaskTypes.GoToObject:
+                return new GoToObjectTask(parameter);
+            case TaskTypes.GoToPosition:
+                return new GoToLocationTask(parameter);
+            case TaskTypes.WaitForDuration:
+                return new WaitForDurationTask(parameter);
+            case TaskTypes.GoToRoom:
+                return new GoToRoomTask(parameter);
+            case TaskTypes.KillClosestAgent:
+                return new KillClosestAgentTask();
+            default:
+                return null;
         }
     }
 }

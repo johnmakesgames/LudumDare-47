@@ -13,7 +13,14 @@ public class INPCTask
 
     public bool IsFinished = false;
     public FinishStates FinishedState = FinishStates.FAILED;
+    public float MaximumRetries = 3;
     public float Retried = 0;
+
+    public virtual void Reset()
+    {
+        FinishedState = FinishStates.FAILED;
+        IsFinished = false;
+    }
 
     public void RunUpdate()
     {
